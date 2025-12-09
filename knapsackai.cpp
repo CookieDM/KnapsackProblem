@@ -5,7 +5,7 @@
 #include <random>
 #include <ctime>
 
-// Parametry problemu ?
+// Parametry problemu
 struct Item {
     int weight;
     int value;
@@ -32,7 +32,7 @@ struct Individual {
     std::vector<int> genes; // 0 lub 1
     int fitness;
 
-    // Obliczanie funkcji przystosowania [cite: 11, 15]
+    // Obliczanie funkcji przystosowania
     void calculateFitness() {
         int currentWeight = 0;
         int currentValue = 0;
@@ -51,7 +51,7 @@ struct Individual {
     }
 };
 
-// Inicjalizacja populacji [cite: 10]
+// Inicjalizacja populacji
 std::vector<Individual> initializePopulation() {
     std::vector<Individual> population(POPULATION_SIZE);
     std::uniform_int_distribution<int> dist(0, 1);
@@ -66,7 +66,7 @@ std::vector<Individual> initializePopulation() {
     return population;
 }
 
-// Selekcja Turniejowa [cite: 13]
+// Selekcja Turniejowa
 Individual tournamentSelection(const std::vector<Individual>& pop) {
     std::uniform_int_distribution<int> dist(0, POPULATION_SIZE - 1);
     Individual best = pop[dist(rng)];
@@ -79,7 +79,7 @@ Individual tournamentSelection(const std::vector<Individual>& pop) {
     return best;
 }
 
-// Krzyżowanie jednopunktowe [cite: 14]
+// Krzyżowanie jednopunktowe
 std::pair<Individual, Individual> crossover(Individual p1, Individual p2) {
     std::uniform_real_distribution<double> prob(0.0, 1.0);
     if (prob(rng) < CROSSOVER_RATE) {
@@ -92,7 +92,7 @@ std::pair<Individual, Individual> crossover(Individual p1, Individual p2) {
     return {p1, p2};
 }
 
-// Mutacja punktowa [cite: 14]
+// Mutacja punktowa
 void mutate(Individual& ind) {
     std::uniform_real_distribution<double> prob(0.0, 1.0);
     for (size_t i = 0; i < ind.genes.size(); ++i) {
@@ -104,13 +104,10 @@ void mutate(Individual& ind) {
 
 int main() {
     auto population = initializePopulation();
-    
-    // Główna pętla algorytmu [cite: 12]
+
+    // Główna pętla algorytmu
     for (int gen = 0; gen < GENERATIONS; ++gen) {
         std::vector<Individual> newPopulation;
-        
-        // Elityzm (opcjonalnie: zachowaj najlepszego)
-        // newPopulation.push_back(*std::max_element(...)); 
 
         while (newPopulation.size() < POPULATION_SIZE) {
             // a. Wybór rodziców
@@ -131,9 +128,9 @@ int main() {
             newPopulation.push_back(children.first);
             if (newPopulation.size() < POPULATION_SIZE) newPopulation.push_back(children.second);
         }
-        
-        population = newPopulation; // [cite: 16]
-        
+
+        population = newPopulation;
+
         // Zbieranie danych do wykresów (najlepszy, średni fitness)
         int maxFit = 0;
         double avgFit = 0;
@@ -147,8 +144,8 @@ int main() {
         std::cout << gen << ";" << maxFit << ";" << avgFit << "\n";
     }
 
-    // [cite: 18] Zwróć najlepsze rozwiązanie
-    auto bestInd = std::max_element(population.begin(), population.end(), 
+    // Zwróć najlepsze rozwiązanie
+    auto bestInd = std::max_element(population.begin(), population.end(),
         [](const Individual& a, const Individual& b){ return a.fitness < b.fitness; });
         
     std::cout << "\nNajlepsze rozwiazanie: Wartosc=" << bestInd->fitness << "\nPrzedmioty: ";
