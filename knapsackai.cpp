@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
+#include <fstream>
 
 // Parametry problemu
 struct Item {
@@ -104,6 +105,7 @@ void mutate(Individual& ind) {
 
 int main() {
     auto population = initializePopulation();
+    std::ofstream ofs("Wyniki.csv", std::ios::app);
 
     // Główna pętla algorytmu
     for (int gen = 0; gen < GENERATIONS; ++gen) {
@@ -142,6 +144,19 @@ int main() {
         
         if (gen == 0) std::cout << "Gen;Max;Avg\n"; // Nagłówek
         std::cout << gen << ";" << maxFit << ";" << avgFit << "\n";
+
+        // Zapisz dane do pliku
+        
+        if (ofs.is_open()) {
+            ofs << gen << ";" << maxFit << ";" << avgFit << "\n";
+        }
+        else {
+            std::cerr << "Nie mozna otworzyc pliku do zapisu wynikow.\n";
+        }
+    }
+    if (ofs.is_open()) {
+        ofs << "\n";
+        ofs.close();
     }
 
     // Zwróć najlepsze rozwiązanie
